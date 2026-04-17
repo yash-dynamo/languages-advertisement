@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hello — @tradehotstuff</title>
+<style>
+/* ══════════════════════════════════════════════
+   THEME TOKENS
+══════════════════════════════════════════════ */
+body {
+  --text-1:    #ffffff;
+  --text-2:    rgba(255,255,255,0.46);
+  --text-3:    rgba(255,255,255,0.20);
+  --rule:      rgba(255,255,255,0.08);
+  --pill-bg:   rgba(255,255,255,0.055);
+  --pill-bd:   rgba(255,255,255,0.10);
+  --tgl-bg:    rgba(255,255,255,0.08);
+  --tgl-bd:    rgba(255,255,255,0.16);
+  --tgl-ico:   rgba(255,255,255,0.65);
+  --bg-a:      #181818;
+  --bg-b:      #050505;
+}
+body.light {
+  --text-1:    #0e0e0e;
+  --text-2:    rgba(0,0,0,0.50);
+  --text-3:    rgba(0,0,0,0.28);
+  --rule:      rgba(0,0,0,0.09);
+  --pill-bg:   rgba(0,0,0,0.045);
+  --pill-bd:   rgba(0,0,0,0.10);
+  --tgl-bg:    rgba(0,0,0,0.065);
+  --tgl-bd:    rgba(0,0,0,0.14);
+  --tgl-ico:   rgba(0,0,0,0.58);
+  --bg-a:      #f0ebe3;
+  --bg-b:      #e7e2da;
+}
+
+/* ══════════════════════════════════════════════
+   RESET + BASE
+══════════════════════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  min-height: 100svh;
+  background: radial-gradient(ellipse at 50% 16%, var(--bg-a) 0%, var(--bg-b) 72%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 52px 24px 72px;
+  font-family: system-ui, -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition: background 0.5s ease;
+}
+
+/* ══════════════════════════════════════════════
+   THEME TOGGLE — fixed top-right
+══════════════════════════════════════════════ */
+.theme-toggle {
+  position: fixed;
+  top: 20px; right: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--tgl-bg);
+  border: 1px solid var(--tgl-bd);
+  border-radius: 100px;
+  padding: 7px 16px 7px 12px;
+  cursor: pointer;
+  color: var(--tgl-ico);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: background 0.3s, border-color 0.3s, color 0.3s, transform 0.15s;
+  user-select: none;
+  outline: none;
+}
+.theme-toggle:hover { transform: translateY(-1px); }
+.theme-toggle:active { transform: translateY(0); }
+.theme-toggle svg {
+  width: 14px; height: 14px; flex-shrink: 0;
+  stroke: currentColor; fill: none;
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.icon-sun { display: none; }
+body.light .icon-moon { display: none; }
+body.light .icon-sun  { display: block; }
+
+/* ══════════════════════════════════════════════
+   PAGE
+══════════════════════════════════════════════ */
+.page {
+  width: 100%;
+  max-width: 840px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ══════════════════════════════════════════════
+   SCENE (MacBook + ambience)
+══════════════════════════════════════════════ */
+.scene {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Ambient backlight glow on page */
+.screen-aura {
+  position: absolute;
+  top: -4%; left: 50%;
+  transform: translateX(-50%);
+  width: 88%;
+  height: 80%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse at 50% 28%,
+    rgba(160,185,255,0.048) 0%,
+    rgba(130,160,255,0.022) 32%,
+    transparent 65%
+  );
+}
+body.light .screen-aura {
+  background: radial-gradient(
+    ellipse at 50% 28%,
+    rgba(80,110,200,0.07) 0%,
+    rgba(60,90,180,0.03) 32%,
+    transparent 65%
+  );
+}
+
+/* ══════════════════════════════════════════════
+   MACBOOK WRAPPER — handles whole-laptop shadow
+══════════════════════════════════════════════ */
+.macbook {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  filter:
+    drop-shadow(0 1px 1px rgba(0,0,0,0.45))
+    drop-shadow(0 5px 18px rgba(0,0,0,0.62))
+    drop-shadow(0 26px 52px rgba(0,0,0,0.52))
+    drop-shadow(0 42px 80px rgba(0,0,0,0.28));
+}
+body.light .macbook {
+  filter:
+    drop-shadow(0 1px 1px rgba(0,0,0,0.20))
+    drop-shadow(0 5px 18px rgba(0,0,0,0.30))
+    drop-shadow(0 26px 52px rgba(0,0,0,0.22))
+    drop-shadow(0 42px 80px rgba(0,0,0,0.12));
+}
+
+/* ══════════════════════════════════════════════
+   LID — outer aluminum frame
+══════════════════════════════════════════════ */
+.mac-lid {
+  width: 100%;
+  background: linear-gradient(
+    170deg,
+    #5c5c5c 0%,
+    #505050 1%,
+    #404040 4%,
+    #3b3b3b 20%,
+    #383838 55%,
+    #343434 82%,
+    #2e2e2e 100%
+  );
+  border-radius: 18px 18px 0 0;
+  padding: 5px 5px 0;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-bottom: none;
+  position: relative;
+  box-shadow:
+    inset 0  1px 0 rgba(255,255,255,0.24),
+    inset 1px 0  0 rgba(255,255,255,0.09),
+    inset -1px 0 0 rgba(255,255,255,0.09);
+}
+
+/* Specular top-edge ribbon */
+.mac-lid::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 10px; right: 10px; height: 1.5px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.18) 12%,
+    rgba(255,255,255,0.34) 50%,
+    rgba(255,255,255,0.18) 88%,
+    transparent
+  );
+  border-radius: 18px 18px 0 0;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════
+   BEZEL — inner black surround
+══════════════════════════════════════════════ */
+.mac-bezel {
+  width: 100%;
+  background: #060606;
+  border-radius: 14px 14px 0 0;
+  padding: 20px 20px 0;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.028),
+    inset 0 1px 4px rgba(0,0,0,0.95);
+  position: relative;
+}
+
+/* ══════════════════════════════════════════════
+   SCREEN — the actual display
+══════════════════════════════════════════════ */
+.mac-screen {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: #00000a;  /* very slightly cool black — LCD character */
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.035),
+    inset 0 0 90px rgba(15,30,100,0.06);  /* subtle blue backlight bleed */
+}
+
+/* Anti-reflective glass glare — IPS panel character */
+.screen-glare {
+  position: absolute; inset: 0;
+  z-index: 15; pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      144deg,
+      rgba(255,255,255,0.07) 0%,
+      rgba(255,255,255,0.026) 13%,
+      transparent 30%
+    ),
+    radial-gradient(
+      ellipse at 78% 14%,
+      rgba(255,255,255,0.022) 0%,
+      transparent 42%
+    );
+}
+
+/* Corner vignette — screen depth */
+.screen-vignette {
+  position: absolute; inset: 0;
+  z-index: 4; pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    transparent 48%,
+    rgba(0,0,0,0.30) 100%
+  );
+}
+
+/* ══════════════════════════════════════════════
+   NOTCH
+══════════════════════════════════════════════ */
+.mac-notch {
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 13.8%;
+  min-width: 68px;
+  max-width: 108px;
+  height: 24px;
+  background: #060606;  /* exact bezel match */
+  border-radius: 0 0 13px 13px;
+  z-index: 16;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 5px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.55);
+}
+
+/* Seamless corner cutouts where notch meets bezel */
+.mac-notch::before,
+.mac-notch::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 10px; height: 10px;
+  background: transparent;
+  pointer-events: none;
+}
+.mac-notch::before {
+  left: -10px;
+  border-bottom-right-radius: 8px;
+  box-shadow: 3px 3px 0 3px #060606;
+}
+.mac-notch::after {
+  right: -10px;
+  border-bottom-left-radius: 8px;
+  box-shadow: -3px 3px 0 3px #060606;
+}
+
+.mac-camera {
+  position: relative;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 34%, #1c1c1c, #0a0a0a);
+  border: 0.5px solid #282828;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.03),
+    inset 0 0 3px rgba(0,0,0,0.95);
+}
+
+/* Camera lens highlight dot */
+.mac-camera::after {
+  content: '';
+  position: absolute;
+  width: 2.5px; height: 2.5px;
+  background: rgba(255,255,255,0.09);
+  border-radius: 50%;
+  top: 1.5px; left: 1.5px;
+}
+
+/* ══════════════════════════════════════════════
+   TICKER
+══════════════════════════════════════════════ */
+.ticker-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0 5%;
+  position: relative;
+  z-index: 5;
+}
+
+.hello-slot {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: width 0.46s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hello-track {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+
+.hello-word {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-family: system-ui, -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 200;
+  color: #fff;
+  white-space: nowrap;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  text-rendering: geometricPrecision;
+  text-shadow: 0 0 48px rgba(255,255,255,0.09);
+}
+
+.brand-part {
+  display: flex;
+  align-items: center;
+  font-family: system-ui, -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 200;
+  color: #fff;
+  white-space: nowrap;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  flex-shrink: 0;
+  text-rendering: geometricPrecision;
+  text-shadow: 0 0 48px rgba(255,255,255,0.09);
+}
+
+/* ══════════════════════════════════════════════
+   SCREEN TAGLINE — inside display, bottom area
+══════════════════════════════════════════════ */
+.screen-tag {
+  position: absolute;
+  bottom: 9%;
+  left: 0; right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 9%;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.screen-tag-head {
+  font-family: system-ui, -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  font-size: clamp(12px, 1.75vw, 18px);
+  font-weight: 300;
+  color: rgba(255,255,255,0.92);
+  letter-spacing: -0.03em;
+  text-align: center;
+  line-height: 1.18;
+  text-rendering: geometricPrecision;
+  text-shadow: 0 1px 12px rgba(0,0,0,0.45);
+}
+
+.screen-tag-sub {
+  font-family: system-ui, -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  font-size: clamp(8px, 0.72vw, 11px);
+  font-weight: 500;
+  color: rgba(255,255,255,0.62);
+  letter-spacing: 0.01em;
+  text-align: center;
+  line-height: 1.52;
+  text-rendering: geometricPrecision;
+  max-width: 42em;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+}
+
+/* ══════════════════════════════════════════════
+   BOTTOM CHIN (inside bezel, below screen)
+   height = 20px → matches top/left/right bezel
+══════════════════════════════════════════════ */
+.mac-chin-inner {
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Subtle separator line above chin */
+.mac-chin-inner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: rgba(255,255,255,0.025);
+}
+
+/* ══════════════════════════════════════════════
+   HINGE
+══════════════════════════════════════════════ */
+.mac-hinge {
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(180deg, #1a1a1a 0%, #222 45%, #1d1d1d 100%);
+  border-left:  1px solid rgba(255,255,255,0.07);
+  border-right: 1px solid rgba(255,255,255,0.07);
+  position: relative; overflow: hidden;
+}
+.mac-hinge::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 8%, rgba(255,255,255,0.055) 50%, transparent 92%);
+}
+
+/* ══════════════════════════════════════════════
+   BASE (keyboard tray)
+══════════════════════════════════════════════ */
+.mac-base {
+  width: 97%;
+  height: 12px;
+  background: linear-gradient(180deg, #353535 0%, #2e2e2e 25%, #292929 65%, #212121 100%);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  position: relative;
+  box-shadow:
+    inset  1px 0 0 rgba(255,255,255,0.065),
+    inset -1px 0 0 rgba(255,255,255,0.065);
+}
+
+/* Trackpad hairline */
+.mac-base::after {
+  content: '';
+  position: absolute;
+  bottom: 3px; left: 50%;
+  transform: translateX(-50%);
+  width: 25%; height: 1px;
+  background: rgba(255,255,255,0.048);
+  border-radius: 1px;
+}
+
+/* ══════════════════════════════════════════════
+   FOOT RUBBER BAR
+══════════════════════════════════════════════ */
+.mac-foot {
+  width: 78%;
+  height: 4px;
+  background: linear-gradient(180deg, #1d1d1d 0%, #131313 100%);
+  border-radius: 0 0 5px 5px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.55);
+}
+
+/* ══════════════════════════════════════════════
+   DESK SHADOW
+══════════════════════════════════════════════ */
+.desk-shadow {
+  width: 74%;
+  height: 30px;
+  margin-top: 2px;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(0,0,0,0.58) 0%,
+    rgba(0,0,0,0.20) 42%,
+    transparent 68%
+  );
+}
+body.light .desk-shadow {
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(0,0,0,0.28) 0%,
+    rgba(0,0,0,0.08) 42%,
+    transparent 68%
+  );
+}
+
+/* ══════════════════════════════════════════════
+   TAGLINE SECTION
+══════════════════════════════════════════════ */
+.tagline-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 44px;
+}
+
+.tl-rule {
+  width: 36px; height: 1px;
+  background: var(--rule);
+  margin-bottom: 30px;
+  border-radius: 1px;
+}
+
+.tl-head {
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 300;
+  letter-spacing: -0.035em;
+  color: var(--text-1);
+  text-align: center;
+  line-height: 1.18;
+  margin-bottom: 14px;
+  transition: color 0.45s ease;
+}
+
+.tl-sub {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-2);
+  text-align: center;
+  line-height: 1.68;
+  max-width: 480px;
+  letter-spacing: -0.008em;
+  margin-bottom: 40px;
+  transition: color 0.45s ease;
+}
+.tl-sub strong {
+  color: var(--text-1);
+  font-weight: 500;
+  transition: color 0.45s ease;
+}
+
+/* ── Language marquee strip ─────────────── */
+.tl-marquee-wrap {
+  width: 100%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%);
+  mask-image:         linear-gradient(90deg, transparent 0%, #000 9%, #000 91%, transparent 100%);
+  margin-bottom: 40px;
+}
+
+.tl-marquee-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: marquee-scroll 32s linear infinite;
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.tl-marquee-word {
+  font-size: 12.5px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: var(--text-3);
+  padding: 0 14px;
+  white-space: nowrap;
+  transition: color 0.45s ease;
+}
+
+.tl-marquee-sep {
+  font-size: 8px;
+  color: var(--rule);
+  flex-shrink: 0;
+  transition: color 0.45s ease;
+  line-height: 1;
+}
+
+/* ── Stats pills ─────────────────────────── */
+.tl-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tl-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-bd);
+  border-radius: 12px;
+  padding: 12px 22px;
+  min-width: 96px;
+  transition: background 0.45s ease, border-color 0.45s ease;
+}
+
+.tl-num {
+  font-size: 24px;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  color: var(--text-1);
+  line-height: 1;
+  transition: color 0.45s ease;
+}
+
+.tl-lbl {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  transition: color 0.45s ease;
+}
+
+.tl-dot {
+  font-size: 16px;
+  color: var(--rule);
+  padding: 0 2px;
+  line-height: 1;
+  user-select: none;
+  transition: color 0.45s ease;
+}
+</style>
+</head>
+<body>
+
+<!-- ── Theme toggle ──────────────────────────── -->
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+  <svg class="icon-moon" viewBox="0 0 24 24">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+  <svg class="icon-sun" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="5"/>
+    <line x1="12" y1="1"  x2="12" y2="3"/>
+    <line x1="12" y1="21" x2="12" y2="23"/>
+    <line x1="4.22"  y1="4.22"  x2="5.64"  y2="5.64"/>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+    <line x1="1"  y1="12" x2="3"  y2="12"/>
+    <line x1="21" y1="12" x2="23" y2="12"/>
+    <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
+    <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
+  </svg>
+  <span id="tglLabel">Dark</span>
+</button>
+
+<!-- ── Page ──────────────────────────────────── -->
+<div class="page">
+
+  <!-- MacBook scene -->
+  <div class="scene">
+    <div class="screen-aura"></div>
+
+    <div class="macbook">
+
+      <!-- Outer aluminum lid -->
+      <div class="mac-lid">
+
+        <!-- Inner black bezel -->
+        <div class="mac-bezel">
+
+          <!-- Display -->
+          <div class="mac-screen">
+
+            <!-- Notch -->
+            <div class="mac-notch">
+              <div class="mac-camera"></div>
+            </div>
+
+            <!-- Glass overlays -->
+            <div class="screen-glare"></div>
+            <div class="screen-vignette"></div>
+
+            <!-- Bottom tagline inside screen -->
+            <div class="screen-tag">
+              <p class="screen-tag-head">Trade has no language barrier.</p>
+              <p class="screen-tag-sub">@tradehotstuff speaks to traders across every market, every timezone.</p>
+            </div>
+
+            <!-- Ticker -->
+            <div class="ticker-center">
+              <div class="hello-slot" id="helloSlot">
+                <div class="hello-track" id="helloTrack"></div>
+              </div>
+              <div class="brand-part" id="brandPart">&thinsp;@tradehotstuff</div>
+            </div>
+
+          </div>
+
+          <!-- Chin strip (bottom bezel, inside lid) -->
+          <div class="mac-chin-inner" aria-hidden="true"></div>
+
+        </div>
+      </div>
+
+      <!-- Hinge -->
+      <div class="mac-hinge"></div>
+
+      <!-- Keyboard body -->
+      <div class="mac-base"></div>
+
+      <!-- Rubber foot bar -->
+      <div class="mac-foot"></div>
+
+    </div>
+
+    <div class="desk-shadow"></div>
+  </div>
+
+  <!-- ── Tagline ──────────────────────────── -->
+  <div class="tagline-section">
+
+    <!-- Scrolling language strip -->
+    <div class="tl-marquee-wrap">
+      <div class="tl-marquee-track" id="marqTrack"></div>
+    </div>
+
+    <!-- Stats -->
+    <div class="tl-stats">
+      <div class="tl-stat">
+        <span class="tl-num">21</span>
+        <span class="tl-lbl">Languages</span>
+      </div>
+      <span class="tl-dot">·</span>
+      <div class="tl-stat">
+        <span class="tl-num">7</span>
+        <span class="tl-lbl">Continents</span>
+      </div>
+      <span class="tl-dot">·</span>
+      <div class="tl-stat">
+        <span class="tl-num">24/7</span>
+        <span class="tl-lbl">Markets</span>
+      </div>
+      <span class="tl-dot">·</span>
+      <div class="tl-stat">
+        <span class="tl-num">∞</span>
+        <span class="tl-lbl">Opportunity</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+/* ── Languages ──────────────────────────────── */
+const langs = [
+  "Hello","مرحبا","হ্যালো","Hallo","Hola","Bonjour",
+  "नमस्ते","Halo","Ciao","こんにちは","안녕하세요","Cześć",
+  "Olá","Привет","สวัสดี","Merhaba","Привіт",
+  "Xin chào","你好"
+];
+
+/* ── Ticker ─────────────────────────────────── */
+const track    = document.getElementById('helloTrack');
+const slot     = document.getElementById('helloSlot');
+const brandEl  = document.getElementById('brandPart');
+const screenEl = document.querySelector('.mac-screen');
+
+let ITEM_H = 80, animId = null, timer = null, current = 0, y = 0;
+const wordWidths = []; // per-word measured widths
+
+function calcFontSize() {
+  const sw = screenEl.offsetWidth || 600;
+  return Math.max(20, Math.min(60, Math.round((sw * 0.67) / 12.8)));
+}
+
+function measureWidths(fs) {
+  const cv  = document.createElement('canvas');
+  const ctx = cv.getContext('2d');
+  ctx.font  = `200 ${fs}px -apple-system, "Helvetica Neue", Arial, sans-serif`;
+  wordWidths.length = 0;
+  langs.forEach(w => wordWidths.push(Math.ceil(ctx.measureText(w).width) + 10));
+}
+
+function build() {
+  if (animId) { cancelAnimationFrame(animId); animId = null; }
+  if (timer)  { clearTimeout(timer); timer = null; }
+
+  const fs = calcFontSize();
+  ITEM_H   = Math.round(fs * 1.44);
+  measureWidths(fs);
+
+  slot.style.height      = ITEM_H + 'px';
+  brandEl.style.fontSize = fs + 'px';
+  brandEl.style.height   = ITEM_H + 'px';
+
+  /* Disable transition during reset so it snaps instantly */
+  slot.style.transition = 'none';
+  slot.style.width      = wordWidths[0] + 'px';
+
+  track.innerHTML = '';
+
+  langs.forEach((word, i) => {
+    const d = document.createElement('div');
+    d.className   = 'hello-word';
+    d.textContent = word;
+    d.style.cssText = `width:${wordWidths[i]}px;height:${ITEM_H}px;font-size:${fs}px`;
+    track.appendChild(d);
+  });
+
+  /* Seamless loop clone */
+  const clone = document.createElement('div');
+  clone.className   = 'hello-word';
+  clone.textContent = langs[0];
+  clone.style.cssText = `width:${wordWidths[0]}px;height:${ITEM_H}px;font-size:${fs}px`;
+  track.appendChild(clone);
+
+  current = 0; y = 0;
+  track.style.transform = 'translateY(0px)';
+
+  /* Re-enable smooth width transition after one frame */
+  requestAnimationFrame(() => {
+    slot.style.transition = 'width 0.46s cubic-bezier(0.4, 0, 0.2, 1)';
+    timer = setTimeout(tick, 1600);
+  });
+}
+
+function easeInOutCubic(t) {
+  return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2, 3) / 2;
+}
+
+function animateTo(targetY, dur, done) {
+  const startY = y, dist = targetY - startY, t0 = performance.now();
+  function frame(now) {
+    const raw = Math.min((now - t0) / dur, 1);
+    y = startY + dist * easeInOutCubic(raw);
+    track.style.transform = `translateY(${y}px)`;
+    if (raw < 1) { animId = requestAnimationFrame(frame); }
+    else { y = targetY; animId = null; track.style.transform = `translateY(${y}px)`; if (done) done(); }
+  }
+  animId = requestAnimationFrame(frame);
+}
+
+function tick() {
+  current++;
+  const visIdx = current % langs.length;
+
+  /* Resize slot to incoming word — runs in sync with the scroll */
+  slot.style.width = wordWidths[visIdx] + 'px';
+
+  animateTo(-(current * ITEM_H), 480, () => {
+    if (current >= langs.length) { current = 0; y = 0; track.style.transform = 'translateY(0px)'; }
+    timer = setTimeout(tick, 940);
+  });
+}
+
+build();
+
+let rz = null;
+window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(build, 120); });
+
+/* ── Marquee ────────────────────────────────── */
+(function buildMarquee() {
+  const el = document.getElementById('marqTrack');
+  const frag = document.createDocumentFragment();
+
+  function addSet() {
+    langs.forEach(word => {
+      const w = document.createElement('span');
+      w.className = 'tl-marquee-word';
+      w.textContent = word;
+      frag.appendChild(w);
+      const s = document.createElement('span');
+      s.className = 'tl-marquee-sep';
+      s.textContent = '·';
+      frag.appendChild(s);
+    });
+  }
+  addSet(); addSet();  // duplicate for seamless loop
+  el.appendChild(frag);
+})();
+
+/* ── Theme toggle ───────────────────────────── */
+const body   = document.body;
+const tglBtn = document.getElementById('themeToggle');
+const tglLbl = document.getElementById('tglLabel');
+
+tglBtn.addEventListener('click', () => {
+  const isLight = body.classList.toggle('light');
+  tglLbl.textContent = isLight ? 'Light' : 'Dark';
+});
+</script>
+</body>
+</html>
