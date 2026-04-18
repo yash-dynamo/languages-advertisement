@@ -349,12 +349,12 @@ body.light .macbook {
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
-  transition: width 0.46s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hello-track {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   will-change: transform;
 }
 
@@ -362,7 +362,7 @@ body.light .macbook {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  font-family: system-ui, -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif;
   font-weight: 200;
   color: #fff;
   white-space: nowrap;
@@ -375,7 +375,7 @@ body.light .macbook {
 .brand-part {
   display: flex;
   align-items: center;
-  font-family: system-ui, -apple-system, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif;
   font-weight: 200;
   color: #fff;
   white-space: nowrap;
@@ -804,7 +804,7 @@ function calcFontSize() {
 function measureWidths(fs) {
   const cv  = document.createElement('canvas');
   const ctx = cv.getContext('2d');
-  ctx.font  = `200 ${fs}px -apple-system, "Helvetica Neue", Arial, sans-serif`;
+  ctx.font  = `200 ${fs}px Helvetica, "Helvetica Neue", Arial, sans-serif`;
   wordWidths.length = 0;
   langs.forEach(w => wordWidths.push(Math.ceil(ctx.measureText(w).width) + 10));
 }
@@ -821,9 +821,11 @@ function build() {
   brandEl.style.fontSize = fs + 'px';
   brandEl.style.height   = ITEM_H + 'px';
 
+  const maxW = Math.max(...wordWidths);
+
   /* Disable transition during reset so it snaps instantly */
   slot.style.transition = 'none';
-  slot.style.width      = wordWidths[0] + 'px';
+  slot.style.width      = maxW + 'px';
 
   track.innerHTML = '';
 
@@ -845,9 +847,8 @@ function build() {
   current = 0; y = 0;
   track.style.transform = 'translateY(0px)';
 
-  /* Re-enable smooth width transition after one frame */
   requestAnimationFrame(() => {
-    slot.style.transition = 'width 0.46s cubic-bezier(0.4, 0, 0.2, 1)';
+    slot.style.transition = 'none';
     timer = setTimeout(tick, 1600);
   });
 }
@@ -870,11 +871,6 @@ function animateTo(targetY, dur, done) {
 
 function tick() {
   current++;
-  const visIdx = current % langs.length;
-
-  /* Resize slot to incoming word — runs in sync with the scroll */
-  slot.style.width = wordWidths[visIdx] + 'px';
-
   animateTo(-(current * ITEM_H), 480, () => {
     if (current >= langs.length) { current = 0; y = 0; track.style.transform = 'translateY(0px)'; }
     timer = setTimeout(tick, 940);
